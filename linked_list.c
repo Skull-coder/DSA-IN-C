@@ -12,12 +12,22 @@ void print(struct Node *a){
 
     while(a!=NULL){
 
-        printf("%d_", a->data);
+        printf("%d ", a->data);
         a= a->next;
 
 
     }
 }
+
+void free_list(struct Node* head) {
+    struct Node* temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
 
 struct Node * insert_at_first(struct Node *head, int data){
 
@@ -31,26 +41,32 @@ struct Node * insert_at_first(struct Node *head, int data){
 }
 
 struct Node * insert_at_last(struct Node *head, int data){
-    struct Node * new= (struct Node*)malloc(sizeof(struct Node));
-
-    new->data= data;
-
+    struct Node * new_node= (struct Node*)malloc(sizeof(struct Node));
+    new_node->data= data;
     struct Node * p= head;
+
+    
 
     while(p->next!=NULL){
         p=p->next;
     }
 
 
-    p->next= new;
-    new->next= NULL;
+    p->next= new_node;
+    new_node->next= NULL;
 
     return head;
 }
 
 struct Node * insert_at_index(struct Node *head, int data, int index){
-    struct Node * new=  (struct Node*)malloc(sizeof(struct Node));
-    new->data= data;
+    
+    if(index==0){
+        head=insert_at_first(head,data);
+        return head;
+    }
+   
+    struct Node * new_node=  (struct Node*)malloc(sizeof(struct Node));
+    new_node->data= data;
     struct Node * p= head;
     int i=0;
     while(i != index-1){
@@ -58,8 +74,8 @@ struct Node * insert_at_index(struct Node *head, int data, int index){
         i++;
     }
 
-    new->next= p->next;
-    p->next= new;
+    new_node->next= p->next;
+    p->next= new_node;
 
     return head;
 }
@@ -124,9 +140,10 @@ struct Node * delete_value(struct Node * head, int target){
             q=q->next;
         }
 
-        if (p->next != NULL) {      // ✅ SAFETY CHECK before freeing
+        if (p->next != NULL) {     
             p->next = p->next->next;
-            free(q);
+            if (q->data == target)
+                free(q);
         }
 
         
@@ -157,7 +174,7 @@ int main(){
 
     head= insert_at_first(head, 0);
     
-    // print(head);
+    
 
     head= insert_at_last(head, 40);
     
@@ -174,6 +191,9 @@ int main(){
 
     print(head);
 
+    free_list(head);
+
+    return 0;
 
 }
 
