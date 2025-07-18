@@ -12,7 +12,7 @@ void print(struct Node *a){
 
     while(a!=NULL){
 
-        printf("%d ", a->data);
+        printf("%d_", a->data);
         a= a->next;
 
 
